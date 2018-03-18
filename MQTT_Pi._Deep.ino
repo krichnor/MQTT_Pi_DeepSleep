@@ -1,6 +1,10 @@
 #include "SSD1306.h" 
 #include <DHT.h>      // Library DHT-sensor-library-master.zip
 
+////////// Setup watch Dog ////////
+
+
+
 //////////  Sensor NAME  //////////
 const char* SensorName     = "krich";
 //////////  Initialize the OLED display using Wire library
@@ -17,14 +21,12 @@ static char humidityTemp[7];
 static char HIndTemp[7];
 char charSensorDisplay[30];   //Buffer to display message
 
-int sensorPin = 36;   // select the input pin for DHT11
-int sensorValue = 0;  // variable to store the value coming from the sensor
 void TempSensorReadDisplay();
 
-////////// KBTG Greeting init variables //////////
+////////// Greeting init variables //////////
 int Device_state = -2;   //1st WifiConnect= 0, reconWIFI >1
 int Device_state_prev = 0;
-void KBTGGreeting();
+void Greeting();
 
 ////////// WIFI & MQTT Header //////////
 #include <WiFi.h>
@@ -74,7 +76,7 @@ byte packetBuffer[NTP_PACKET_SIZE]; //buffer to hold incoming & outgoing packets
 void setup() {
   dht.begin();
   Serial.begin(115200);
-  KBTGGreeting();
+  Greeting();
 
   ////////// WIFI chacking and setting up ////////////
   if (WiFi.status() != WL_CONNECTED) {
@@ -129,7 +131,7 @@ void loop() {
 /*---------------------------- SUB FUNCTION ----------------------------*/
 
 ///////// KBTG Greeting message /////////
-void KBTGGreeting()
+void Greeting()
 {
   if (Device_state < -1) {
     ///////// Initial OLED /////////
@@ -139,9 +141,9 @@ void KBTGGreeting()
     display.setColor(WHITE);
     display.setTextAlignment(TEXT_ALIGN_CENTER);
     display.setFont(ArialMT_Plain_16);
-    display.drawString(64, 10, "Wecome to");
+    display.drawString(64, 10, "IoT Project");
     display.setFont(ArialMT_Plain_24);
-    display.drawString(64, 30, "KBTG IoT");
+    display.drawString(64, 30, "Temp & Hue");
     display.display();
     Device_state = -1;
     delay(2000);    // Greeting meessage will be display only one time.
@@ -220,11 +222,11 @@ void MQTTconnect() {
       display.clear();
       display.setTextAlignment(TEXT_ALIGN_LEFT);
       display.setFont(ArialMT_Plain_16);
-      display.drawString(0, 0, "KBTG IoT:");
+      display.drawString(0, 0, "IoT Project");
       display.setTextAlignment(TEXT_ALIGN_RIGHT);
       display.setFont(ArialMT_Plain_10);
       display.drawString(128, 20, "Temperature Sensor Proj.");
-      display.drawString(128, 35, "Connecting to MQTT");
+      display.drawString(128, 35, "Connecting to Pi MQTT");
       display.drawString(128, 50, "SSID: " + String(ssid));
       display.display();
       delay(1000);  //Re-connecting in a minute
@@ -253,7 +255,7 @@ void TempSensorReadDisplay()
     display.setColor(WHITE);
     display.setTextAlignment(TEXT_ALIGN_LEFT);
     display.setFont(ArialMT_Plain_16);
-    display.drawString(0, 0, "KBTG IoT: Temp.");
+    display.drawString(0, 0, "Project IoT: Temp.");
     display.setFont(ArialMT_Plain_10);
     display.drawString(0, 20, "DHT sensor cannot be read");
     display.drawString(0, 35, "Please checking connector");
@@ -279,7 +281,7 @@ void TempSensorReadDisplay()
   display.setColor(WHITE);
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(ArialMT_Plain_16);
-  display.drawString(0, 0, "KBTG IoT: Temp.");
+  display.drawString(0, 0, "IoT Project: Temp.");
   display.setTextAlignment(TEXT_ALIGN_RIGHT);
   display.setFont(ArialMT_Plain_10);
   display.drawString(120, 20, "Temperature: " + String(t) + " *C");
